@@ -11,20 +11,32 @@
     <title>Exercise</title>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary" style="font-size: 22px;">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="#" style="font-size: 32px;">HomePage</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav">
-              <a class="nav-link" href="#">Profile</a>
-              <a class="nav-link" href="#">Summary</a>
-              <a class="nav-link" href="#">Options</a>
-            </div>
-          </div>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary" style="font-size: 22px;">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#" style="font-size: 32px;">HomePage</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      {% if session["user_id"] %}
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-link" href="#">Profile</a>
+          <a class="nav-link" href="#">Summary</a>
+          <a class="nav-link" href="#">Options</a>
         </div>
-    </nav>
+      </div>
+      {% else %}
+      <div class="navbar-nav ms-auto mt-2">
+        <a class="nav-link" href="/register">Register</a>
+        <a class="nav-link" href="/login">Log In</a>
+      </div>
+      {% endif %}
+    </div>
+  </nav>
+
+<main class="container py-5 text-center">
+  {% block main %}{% endblock %}
+</main>
+
 </body>
 </html>
