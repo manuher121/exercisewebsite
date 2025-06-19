@@ -1,0 +1,90 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Daily Tasks 
+{% endblock %}
+
+{% block main %}
+    <form action="/daily" method="post">
+        <div class="row row-cols-2 row-cols-md-4 g-4">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Sit-Ups</h5>
+                        <p class="card-text">Did you do the {{ exercises_info.sit_ups }} sit-up's today?</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Push-Ups</h5>
+                        <p class="card-text">Did you do the {{ exercises_info.push_ups }} push-up's today?</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Plank</h5>
+                        <p class="card-text">Did you do a plank for {{ exercises_info.plank }} second's today?</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Run</h5>
+                        <p class="card-text">Did you run for {{ exercises_info.run }} miles today?</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Money Spent</h5>
+                        <p class="card-text">Did you spent any money today, if so, how much?</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Weight</h5>
+                        <p class="card-text">Enter your current weight.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Healthy Food</h5>
+                        <p class="card-text">Did you eat (only) healthy food today?</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Date</h5>
+                        <p class="card-text">The date at which the form will be submmitted {{ date }}</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <button class="btn btn-primary" type="submit">Log In</button>
+    </form>
+
+
+
+
+{% endblock %}

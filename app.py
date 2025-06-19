@@ -1,6 +1,7 @@
 import os
+from datetime import datetime
 from flask import Flask, request, session, render_template, redirect
-from helpers import login_required, apology
+from helpers import login_required, apology, dict_factory
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import select, create_engine, insert
@@ -24,6 +25,20 @@ class User(db.Model):
     hash = db.Column(db.String, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
 
+
+class Exercise(db.Model):
+    __tablename__ = 'exercises'
+    user_id = db.Column(db.Integer, primary_key=True, nullable=False)
+    sit_ups = db.Column(db.Integer)
+    push_ups = db.Column(db.Integer)
+    plank = db.Column(db.Integer)
+    run = db.Column(db.Float)
+    money_spent = db.Column(db.Float)
+    weight = db.Column(db.Integer)
+    healthy_food = db.Column(db.Integer)
+    time = db.Column(db.String)
+
+
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
@@ -39,7 +54,23 @@ def after_request(response):
 @app.route('/')
 @login_required 
 def index():
-    return render_template('layout.html')
+
+    get_exercises_info = select(Exercise).where(Exercise.user_id == session["user_id"])
+    with engine.connect() as conn:
+
+
+
+
+        
+        result = conn.execute(get_exercises_info)
+        for row in result:
+            exercises_info = row._mapping
+        if exercises_info.user_id == session["user_id"]:
+            date = datetime.now()
+            return render_template("daily.html", exercises_info=exercises_info, date=date.strftime('%d/%m/%Y %H:%M'))
+        else:                            
+            return render_template("options.html")
+
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -61,14 +92,19 @@ def login():
                 new_result = row
         try:
             if check_password_hash(new_result.hash, request.form.get("password")):
+
                 session["user_id"] =  new_result.id
+
                 return redirect("/")
             else:
                 return apology("incorrect password", 403)
         except: 
             return apology("incorrect username", 403)
+        
+
     else:
         return render_template("login.html")
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -99,16 +135,15 @@ def register():
         return render_template("register.html")
 
 
-
-
-
-
-
-
-
 @app.route("/logout")
 def logout():
 
     session.clear()
 
     return redirect("/")
+
+
+@app.route("/options")
+def options():
+    return redirect("/")
+
