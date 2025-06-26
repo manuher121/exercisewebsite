@@ -57,10 +57,6 @@ def index():
 
     get_exercises_info = select(Exercise).where(Exercise.user_id == session["user_id"])
     with engine.connect() as conn:
-
-
-
-
         
         result = conn.execute(get_exercises_info)
         for row in result:
@@ -147,3 +143,16 @@ def logout():
 def options():
     return redirect("/")
 
+@app.route("/daily")
+def daily(): 
+    get_exercises_info = select(Exercise).where(Exercise.user_id == session["user_id"])
+    with engine.connect() as conn:
+        
+        result = conn.execute(get_exercises_info)
+        for row in result:
+            exercises_info = row._mapping
+        if exercises_info.user_id == session["user_id"]:
+            date = datetime.now()
+            return render_template("daily.html", exercises_info=exercises_info, date=date.strftime('%d/%m/%Y %H:%M'))
+        else:                            
+            return render_template("options.html")
