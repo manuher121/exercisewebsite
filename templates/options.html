@@ -6,12 +6,64 @@
 
 {% block main %}
     <form action="/options" method="post">
-        <div class="mb-3">
-            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="username" placeholder="Username" type="text">
+
+
+
+
+<div class="card" style="width: 40rem; margin: auto">
+    <div class="card-body">
+        <h5 class="card-title">Enter the quantity of each exercise you want to start with!</h5>
+        <div class="row g-3 align-items-center">
+            <div class="col">
+                <label class="col-form-label">Sit-ups</label>
+            </div>
+            <div class="col">
+                <input type="number" id="push-ups" class="form-control">
+            </div>
+            <div class="col-auto">
+                <span class="form-text">Must be a number!</span>
+            </div>
         </div>
-        <div class="mb-3">
-            <input class="form-control mx-auto w-auto" name="password" placeholder="asd" type="password">
+        <div class="row g-3 align-items-center">
+            <div class="col">
+                <label class="col-form-label">Push-Ups</label>
+            </div>
+            <div class="col">
+                <input type="number" id="push-ups" class="form-control">
+            </div>
+            <div class="col-auto">
+                <span class="form-text">Must be a number!</span>
+            </div>
         </div>
-        <button class="btn btn-primary" type="submit">Register</button>
+        <div class="row g-3 align-items-center">
+            <div class="col">
+                <label class="col-form-label">Plank(seconds)</label>
+            </div>
+            <div class="col">
+                <input type="number" id="push-ups" class="form-control">
+            </div>
+            <div class="col-auto">
+                <span class="form-text">Must be a number!</span>
+            </div>
+        </div>
+        <div class="row g-3 align-items-center">
+            <div class="col">
+                <label class="col-form-label">Run(miles)</label>
+            </div>
+            <div class="col">
+                <input type="number" id="push-ups" class="form-control">
+            </div>
+            <div class="col-auto">
+                <span class="form-text">Must be a number!</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+        <button class="btn btn-primary" style="margin: 10px" type="submit">Register</button>
     </form>
 {% endblock %}

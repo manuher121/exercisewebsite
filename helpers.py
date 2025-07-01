@@ -2,6 +2,11 @@ import requests
 import sqlite3
 from flask import redirect, render_template, session
 from functools import wraps
+from sqlalchemy import select, create_engine, insert
+from flask_session import Session
+from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, request, session, render_template, redirect
+
 
 
 def login_required(f):
@@ -38,3 +43,11 @@ def dict_factory(cursor, row):
     for idx, col in enumerate(cursor.description):
         d[col[0]] = row[idx]
     return d
+
+def get_info_db(engine, Exercise):
+    get_exercises_info = select(Exercise).where(Exercise.user_id == session["user_id"])
+    with engine.connect() as conn:
+        result = conn.execute(get_exercises_info)
+        for row in result:
+            exercises_info = row._mapping
+            return exercises_info

@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 from flask import Flask, request, session, render_template, redirect
-from helpers import login_required, apology, dict_factory
+from helpers import login_required, apology, dict_factory, get_info_db
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import select, create_engine, insert
@@ -38,6 +38,18 @@ class Exercise(db.Model):
     healthy_food = db.Column(db.Integer)
     time = db.Column(db.String)
 
+class Daily(db.Model):
+    __tablename__ = "daily"
+    user_id = db.Column(db.Integer, primary_key=True, nullable=False)
+    sit_ups = db.Column(db.Integer)
+    push_ups = db.Column(db.Integer)
+    plank = db.Column(db.Integer)
+    run = db.Column(db.Float)
+    money_spent = db.Column(db.Float)
+    weight = db.Column(db.Integer)
+    healthy_food = db.Column(db.String)
+    time = db.Column(db.String)
+
 
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
@@ -55,19 +67,20 @@ def after_request(response):
 @login_required 
 def index():
 
-    get_exercises_info = select(Exercise).where(Exercise.user_id == session["user_id"])
-    with engine.connect() as conn:
-        
-        result = conn.execute(get_exercises_info)
-        for row in result:
-            exercises_info = row._mapping
-        if exercises_info.user_id == session["user_id"]:
+    user_info = get_info_db(engine, Exercise)
+    try:
+        if user_info.user_id == session["user_id"]:
             date = datetime.now()
-            return render_template("daily.html", exercises_info=exercises_info, date=date.strftime('%d/%m/%Y %H:%M'))
-        else:                            
-            return render_template("options.html")
-
-
+            exercise_check = get_info_db(engine, Daily)
+        try:
+            if (exercise_check.time == date.strftime('%d/%m/%Y')):
+                return apology("you did it already", 400)
+            else:
+                return redirect("/daily")
+        except:
+            return redirect("/daily")
+    except:                            
+        return render_template("options.html")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -141,18 +154,51 @@ def logout():
 
 @app.route("/options")
 def options():
-    return redirect("/")
+    
+    return apology("No options to add", 300)
 
-@app.route("/daily")
+@app.route("/daily", methods=["GET", "POST"])
 def daily(): 
-    get_exercises_info = select(Exercise).where(Exercise.user_id == session["user_id"])
-    with engine.connect() as conn:
+
+    if request.method == "POST":
+        info = get_info_db(engine, Exercise)
+        if not request.form.get("sit_ups"):
+            return apology("Do the sit ups!", 300)
+        if not request.form.get("push_ups"):
+            return apology("Do the Push-Ups!", 300)
+        if not request.form.get("plank"):
+            return apology("Do the Planks!", 300)
+        if not request.form.get("run"):
+            return apology("RUN!", 300)
+        if not request.form.get("amount"):
+            return apology("Enter an amount!", 300)
+        if not request.form.get("weight"):
+            return apology("Enter your weight!", 300)
         
-        result = conn.execute(get_exercises_info)
-        for row in result:
-            exercises_info = row._mapping
-        if exercises_info.user_id == session["user_id"]:
+        try:  
             date = datetime.now()
-            return render_template("daily.html", exercises_info=exercises_info, date=date.strftime('%d/%m/%Y %H:%M'))
+            daily_exercise = insert(Daily).values(user_id = session["user_id"], sit_ups = info.sit_ups, push_ups = info.push_ups, 
+                                                  plank = info.plank, run = info.run, money_spent = request.form.get("amount"), 
+                                                  weight = request.form.get("weight"), healthy_food = request.form.get("food"), time=date.strftime('%d/%m/%Y'))
+            with engine.connect() as conn:
+                result = conn.execute(daily_exercise)
+                conn.commit()
+        except:
+            return apology("user already in use", 400)
+
+    user_info = get_info_db(engine, Exercise)
+    try:
+        if user_info.user_id == session["user_id"]:
+            date = datetime.now()
+            exercise_check = get_info_db(engine, Daily)
+            try:
+                if (exercise_check.time == date.strftime('%d/%m/%Y')):
+                    return apology("you did it already", 400)
+                else:
+                    return render_template("daily.html",info=user_info, date=date.strftime('%d/%m/%Y %H:%M'))
+            except:
+                return render_template("daily.html",info=user_info, date=date.strftime('%d/%m/%Y %H:%M'))
         else:                            
-            return render_template("options.html")
+            return redirect("/options")
+    except:
+        return redirect("/options")
