@@ -175,16 +175,14 @@ def daily():
         if not request.form.get("weight"):
             return apology("Enter your weight!", 300)
         
-        try:  
-            date = datetime.now()
-            daily_exercise = insert(Daily).values(user_id = session["user_id"], sit_ups = info.sit_ups, push_ups = info.push_ups, 
+        date = datetime.now()
+        daily_exercise = insert(Daily).values(user_id = session["user_id"], sit_ups = info.sit_ups, push_ups = info.push_ups, 
                                                   plank = info.plank, run = info.run, money_spent = request.form.get("amount"), 
                                                   weight = request.form.get("weight"), healthy_food = request.form.get("food"), time=date.strftime('%d/%m/%Y'))
-            with engine.connect() as conn:
-                result = conn.execute(daily_exercise)
-                conn.commit()
-        except:
-            return apology("user already in use", 400)
+        with engine.connect() as conn:
+            result = conn.execute(daily_exercise)
+            conn.commit()
+        return apology("user already in use", 400)
 
     user_info = get_info_db(engine, Exercise)
     try:
